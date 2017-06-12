@@ -1,0 +1,7 @@
+---
+
+- hosts: nginx
+  vars_files:
+    - /etc/ansible/roles/nginx/vars/centos{{ ansible_distribution_major_version }}.yml
+  roles:
+    - nginx
