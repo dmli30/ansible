@@ -1,0 +1,7 @@
+---
+
+weblogic_user_passwd: $1$9kse54pk$EVR.ApC9ag/uuWBIvPSte/
+JAVA_HOME: /usr/local/java/jdk1.8
+JRE_HOME: /usr/local/java/jdk1.8/jre
+weblogic_console_passwd: pass*1234
+domain_name: base_domain

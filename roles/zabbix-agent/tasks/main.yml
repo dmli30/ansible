@@ -1,0 +1,19 @@
+---
+
+- name: copy zabbix repo
+  copy:
+    src: zabbix-release-3.2-1.el{{ ansible_distribution_major_version }}.noarch.rpm
+    dest: /usr/src
+
+- name: install zabbix repo
+  yum:
+    name: /usr/src/zabbix-release-3.2-1.el{{ ansible_distribution_major_version }}.noarch.rpm
+    state: present
+
+- name: install zabbix agent
+  yum: name=zabbix-agent state=present
+
+- name: configure zabbix agent
+  template: src=zabbix_agentd.conf.j2 dest=/etc/zabbix/zabbix_agentd.conf
+  notify:
+    - restart zabbix-agent

@@ -1,0 +1,73 @@
+---
+
+- name: copy zabbix repo
+  copy:
+    src: zabbix-release-3.2-1.el7.noarch.rpm
+    dest: /usr/src/
+
+- name: install zabbix repo
+  yum:
+    name: /usr/src/zabbix-release-3.2-1.el7.noarch.rpm
+    state: present
+
+- name: install zabbix server
+  yum: name={{ item }} state=present
+  with_items:
+    - zabbix-agent
+    - zabbix-get
+    - zabbix-java-gateway
+    - zabbix-server-mysql
+    - zabbix-web
+    - zabbix-web-mysql
+
+- name: start mysql
+  service: name=mariadb state=started
+
+- name: creat zabbix database
+  mysql_db:
+    name: "{{ zabbix_db_name }}"
+    state: present
+    encoding: utf8
+    login_user: root
+    login_password: "{{ mysql_root_passwd }}"
+  register: db_created
+
+- name: creat zabbix db user
+  mysql_user:
+    name: "{{ zabbix_db_user }}"
+    password: "{{ zabbix_db_passwd }}"
+    priv: '{{ zabbix_db_name }}.*:ALL'
+    state: present
+    login_user: root
+    login_password: "{{ mysql_root_passwd }}"
+
+- name: copy create.sql
+  copy: src=create.sql dest=/usr/src/
+
+- name: import zabbix database
+  mysql_db:
+    state: import
+    name: "{{ zabbix_db_name }}"
+    target: /usr/src/create.sql
+    login_user: root
+    login_password: "{{ mysql_root_passwd }}"
+  when: db_created|changed
+
+- name: configure php.ini
+  template: src=php.ini.j2 dest=/etc/php.ini
+  notify:
+    - restart apache
+
+- name: configure zabbix_server.conf
+  template: src=zabbix_server.conf.j2 dest=/etc/zabbix/zabbix_server.conf
+  notify:
+    - restart zabbix-server
+
+- name: start apache
+  service: name=httpd state=started
+
+- name: start zabbix
+  service: name=zabbix-server state=started
+
+- name: start zabbix agent
+  service: name=zabbix-agent state=started

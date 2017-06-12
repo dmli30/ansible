@@ -1,0 +1,6 @@
+---
+
+max_open_files: 65535
+listen_port: 80
+server_name: localhost
+web_root: /usr/share/nginx/html

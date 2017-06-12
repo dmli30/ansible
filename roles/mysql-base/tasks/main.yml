@@ -1,0 +1,24 @@
+---
+
+- name: install mysql server package
+  yum: name={{ mysql_package }} state=present
+
+- name: start mysql service
+  service: name={{ mysql_service }} state=started enabled=yes
+
+- name: install MySQL-python
+  yum: name=MySQL-python state=present
+
+- name: change mysql root passwd
+  mysql_user: name=root password={{ mysql_root_passwd }}
+
+- name: copy .my.cnf file
+  template: src=my.cnf.j2 dest=~/.my.cnf
+
+- name: remove test database
+  mysql_db:
+    name: test
+    state: absent
+    login_user: root
+    login_password: "{{ mysql_root_passwd }}"
+
