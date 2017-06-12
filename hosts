@@ -1,20 +1,19 @@
-192.168.7.224 ansible_user=root
-192.168.7.225 ansible_user=root
+hosts1.example.com ansible_user=root
+hosts2.example.com ansible_user=root
 
 [zabbix-server]
-192.168.7.225
+hosts2.example.com
 
 [zabbix-agent]
-192.168.7.224
+hosts1.example.com
 
 [web-deploy]
-192.168.7.224
-192.168.7.225
+hosts1.example.com
+hosts2.example.com
 
 [weblogic]
-192.168.7.224
+hosts1.example.com
 
 [nginx]
-192.168.7.224
-192.168.7.225
-
+hosts1.example.com
+hosts2.example.com
