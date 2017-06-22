@@ -1,0 +1,15 @@
+---
+- hosts: cobbler
+  gather_facts: no
+  tasks:
+    - name: add fingerprint of cobbler hosts to known_hosts
+      shell: /usr/bin/ssh-keyscan {{ item }} >> /root/.ssh/known_hosts
+      run_once: true
+      delegate_to: 127.0.0.1
+      with_items:
+        - "{{ groups['cobbler'] }}"
+
+    - name: add SSH authorized key to cobbler hosts
+      authorized_key:
+        user: root
+        key: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
