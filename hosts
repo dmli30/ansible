@@ -17,3 +17,6 @@ hosts1.example.com
 [nginx]
 hosts1.example.com
 hosts2.example.com
+
+[cobbler]
+192.168.174.[100:200]
